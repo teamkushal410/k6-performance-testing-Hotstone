@@ -1,0 +1,27 @@
+name: K6 Performance Test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  k6-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup k6
+        uses: grafana/setup-k6-action@v1
+
+      - name: Run k6 test
+        run: |
+          k6 run --summary-export=summary.json k6-test.js
+
+      - name: Upload report
+        uses: actions/upload-artifact@v4
+        with:
+          name: k6-report
+          path: summary.json
